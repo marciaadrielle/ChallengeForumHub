@@ -1,10 +1,7 @@
 package forum.hub.api.controller;
 
 
-import forum.hub.api.topicos.DadosCadastrotopicos;
-import forum.hub.api.topicos.DadosListagemTopico;
-import forum.hub.api.topicos.Topicos;
-import forum.hub.api.topicos.TopicosRepository;
+import forum.hub.api.topicos.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,9 +28,16 @@ public class TopicosController {
 
 
     @GetMapping
-    public Page<DadosListagemTopico> listar(@PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
-        return repository.findAll(paginacao)
-                .map(DadosListagemTopico::new);
+    public Page<DadosListagemTopico> listar(
+            @RequestParam(required = false) Curso curso,
+            @PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
+        Page<Topicos> page;
+        if (curso != null){
+            page = repository.findByCurso(curso, paginacao);
+        } else{
+            page = repository.findAll(paginacao);
+        }
+        return page.map(DadosListagemTopico::new);
     }
 
 }
