@@ -10,8 +10,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("topicos")
 public class TopicosController {
@@ -28,7 +26,7 @@ public class TopicosController {
 
 
     @GetMapping
-    public Page<DadosListagemTopico> listar(
+    public Page<DadosListagemTopicos> listar(
             @RequestParam(required = false) Curso curso,
             @PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
         Page<Topicos> page;
@@ -37,7 +35,15 @@ public class TopicosController {
         } else{
             page = repository.findAll(paginacao);
         }
-        return page.map(DadosListagemTopico::new);
+        return page.map(DadosListagemTopicos::new);
+    }
+
+    @PutMapping
+    @Transactional
+    public void editar(@RequestBody @Valid DadosEditatopicos dados){
+        var topico = repository.getReferenceById(dados.id());
+        topico.editarInformacoes(dados);
+
     }
 
 }

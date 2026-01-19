@@ -1,6 +1,7 @@
 package forum.hub.api.topicos;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,5 +37,27 @@ public class Topicos {
         this.dataCriacao = LocalDateTime.now();
         this.status = Status.ABERTO;
         this.curso =dados.curso();
+    }
+
+
+    public void editarInformacoes(@Valid DadosEditatopicos dados) {
+
+        if (dados.titulo() != null){
+            this.titulo = dados.titulo();
+        }
+
+        if (dados.mensagem() != null){
+            this.mensagem = dados.mensagem();
+        }
+
+        if (dados.status() != null){
+            this.status = dados.status();
+        }
+
+        if (dados.curso() != null) {
+            this.curso = dados.curso();
+        }
+
+
     }
 }
