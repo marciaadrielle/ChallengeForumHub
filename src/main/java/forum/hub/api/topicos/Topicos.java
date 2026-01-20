@@ -30,7 +30,10 @@ public class Topicos {
     @Enumerated(EnumType.STRING)
     private Curso curso;
 
+    private  Boolean ativo;
+
     public Topicos(DadosCadastrotopicos dados) {
+        this.ativo = true;
         this.titulo = dados.titulo();
         this.mensagem = dados.mensagem();
         this.autor = dados.autor();
@@ -40,7 +43,7 @@ public class Topicos {
     }
 
 
-    public void editarInformacoes(@Valid DadosEditatopicos dados) {
+    public void atualizarInformacoes(@Valid DadosAtualizaTopicos dados) {
 
         if (dados.titulo() != null){
             this.titulo = dados.titulo();
@@ -59,5 +62,9 @@ public class Topicos {
         }
 
 
+    }
+
+    public void excluir() {
+        this.ativo = false;
     }
 }

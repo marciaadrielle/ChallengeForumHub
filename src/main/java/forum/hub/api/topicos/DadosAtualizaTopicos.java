@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
-public record DadosEditatopicos(
+public record DadosAtualizaTopicos(
         @NotNull
         Long id,
         String titulo,
@@ -13,7 +13,7 @@ public record DadosEditatopicos(
         LocalDateTime dataCriacao,
         Status status
 ) {
-    public DadosEditatopicos(Topicos topicos){
+    public DadosAtualizaTopicos(Topicos topicos){
         this(
                 topicos.getId(),
                 topicos.getTitulo(),

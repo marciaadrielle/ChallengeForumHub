@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,17 +34,33 @@ public class TopicosController {
         if (curso != null){
             page = repository.findByCurso(curso, paginacao);
         } else{
-            page = repository.findAll(paginacao);
+            page = repository.findAllByAtivoTrue(paginacao);
         }
         return page.map(DadosListagemTopicos::new);
     }
 
     @PutMapping
     @Transactional
-    public void editar(@RequestBody @Valid DadosEditatopicos dados){
+    public void atualizar(@RequestBody @Valid DadosAtualizaTopicos dados){
         var topico = repository.getReferenceById(dados.id());
-        topico.editarInformacoes(dados);
+        topico.atualizarInformacoes(dados);
 
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosDetalhamentoTopicos> detalhar(@PathVariable Long id) {
+        return repository.findById(id)
+                .map(t -> ResponseEntity.ok(new DadosDetalhamentoTopicos(t)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluir(@PathVariable Long id){
+        var topico = repository.getReferenceById(id);
+        topico.excluir();
+    }
+
+
 
 }
