@@ -9,7 +9,8 @@ public record DadosDetalhamentoTopicos(
         String autor,
         Curso curso,
         LocalDateTime dataCriacao,
-        Status status
+        Status status,
+        boolean ativo
 ) {
     public DadosDetalhamentoTopicos(Topicos topicos){
         this(
@@ -19,7 +20,8 @@ public record DadosDetalhamentoTopicos(
                 topicos.getAutor(),
                 topicos.getCurso(),
                 topicos.getDataCriacao(),
-                topicos.getStatus()
+                topicos.getStatus(),
+                topicos.getAtivo()
 
         );
     }
