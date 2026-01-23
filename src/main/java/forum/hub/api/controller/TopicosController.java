@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("topicos")
@@ -20,14 +21,15 @@ public class TopicosController {
 
     @PostMapping
     @Transactional
-    public void cadastrarTopico(@RequestBody @Valid DadosCadastrotopicos dados){
-        repository.save(new Topicos(dados));
+    public ResponseEntity cadastrarTopico(@RequestBody @Valid DadosCadastrotopicos dados, UriComponentsBuilder uriBuilder){
+        var topico = new Topicos(dados);
+        repository.save(topico);
+        var uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
+        return ResponseEntity.created(uri).body(new DadosDetalhamentoTopicos(topico));
     }
 
-
-
     @GetMapping
-    public Page<DadosListagemTopicos> listar(
+    public ResponseEntity<Page<DadosListagemTopicos>> listar(
             @RequestParam(required = false) Curso curso,
             @PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
         Page<Topicos> page;
@@ -36,29 +38,30 @@ public class TopicosController {
         } else{
             page = repository.findAllByAtivoTrue(paginacao);
         }
-        return page.map(DadosListagemTopicos::new);
+        return ResponseEntity.ok(page.map(DadosListagemTopicos::new));
     }
 
     @PutMapping
     @Transactional
-    public void atualizar(@RequestBody @Valid DadosAtualizaTopicos dados){
+    public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizaTopicos dados){
         var topico = repository.getReferenceById(dados.id());
         topico.atualizarInformacoes(dados);
+        return ResponseEntity.ok(new DadosDetalhamentoTopicos(topico));
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DadosDetalhamentoTopicos> detalhar(@PathVariable Long id) {
-        return repository.findById(id)
-                .map(t -> ResponseEntity.ok(new DadosDetalhamentoTopicos(t)))
-                .orElse(ResponseEntity.notFound().build());
+        var topico = repository.getReferenceById(id);
+        return ResponseEntity.ok(new DadosDetalhamentoTopicos(topico));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public void excluir(@PathVariable Long id){
+    public ResponseEntity excluir(@PathVariable Long id){
         var topico = repository.getReferenceById(id);
         topico.excluir();
+        return ResponseEntity.noContent().build();
     }
 
 

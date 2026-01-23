@@ -3,6 +3,7 @@ package forum.hub.api.topicos;
 import java.time.LocalDateTime;
 
 public record DadosListagemTopicos(
+        Long id,
         String titulo,
         String mensagem,
         String autor,
@@ -12,6 +13,7 @@ public record DadosListagemTopicos(
 ) {
     public DadosListagemTopicos(Topicos topicos){
         this(
+                topicos.getId(),
                 topicos.getTitulo(),
                 topicos.getMensagem(),
                 topicos.getAutor(),
