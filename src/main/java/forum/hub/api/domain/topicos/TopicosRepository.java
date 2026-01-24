@@ -1,4 +1,4 @@
-package forum.hub.api.topicos;
+package forum.hub.api.domain.topicos;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

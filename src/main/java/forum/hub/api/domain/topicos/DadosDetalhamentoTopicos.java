@@ -1,29 +1,28 @@
-package forum.hub.api.topicos;
-
-import jakarta.validation.constraints.NotNull;
+package forum.hub.api.domain.topicos;
 
 import java.time.LocalDateTime;
 
-public record DadosAtualizaTopicos(
-        @NotNull
+public record DadosDetalhamentoTopicos(
         Long id,
         String titulo,
         String mensagem,
+        String autor,
         Curso curso,
         LocalDateTime dataCriacao,
-        Status status
+        Status status,
+        boolean ativo
 ) {
-    public DadosAtualizaTopicos(Topicos topicos){
+    public DadosDetalhamentoTopicos(Topicos topicos){
         this(
                 topicos.getId(),
                 topicos.getTitulo(),
                 topicos.getMensagem(),
+                topicos.getAutor(),
                 topicos.getCurso(),
                 topicos.getDataCriacao(),
-                topicos.getStatus()
+                topicos.getStatus(),
+                topicos.getAtivo()
 
         );
+    }
 }
-}
-
-
