@@ -1,4 +1,4 @@
-package forum.hub.api.infra;
+package forum.hub.api.infra.exception;
 
 
 import jakarta.persistence.EntityNotFoundException;
