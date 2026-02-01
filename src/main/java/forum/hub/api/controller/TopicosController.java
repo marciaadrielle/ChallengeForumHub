@@ -2,6 +2,7 @@ package forum.hub.api.controller;
 
 
 import forum.hub.api.domain.topicos.*;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,10 +22,11 @@ public class TopicosController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastrarTopico(@RequestBody @Valid DadosCadastrotopicos dados, UriComponentsBuilder uriBuilder){
+    public ResponseEntity<DadosDetalhamentoTopicos> cadastrarTopico(@RequestBody @Valid DadosCadastroTopicos dados, UriComponentsBuilder uriBuilder) {
         var topico = new Topicos(dados);
         repository.save(topico);
-        var uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
+        var uri = uriBuilder.path("/topicos/{id}")
+                .buildAndExpand(topico.getId()).toUri();
         return ResponseEntity.created(uri).body(new DadosDetalhamentoTopicos(topico));
     }
 
@@ -33,18 +35,19 @@ public class TopicosController {
             @RequestParam(required = false) Curso curso,
             @PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
         Page<Topicos> page;
-        if (curso != null){
+        if (curso != null) {
             page = repository.findByCurso(curso, paginacao);
-        } else{
+        } else {
             page = repository.findAllByAtivoTrue(paginacao);
         }
         return ResponseEntity.ok(page.map(DadosListagemTopicos::new));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizaTopicos dados){
-        var topico = repository.getReferenceById(dados.id());
+    public ResponseEntity<DadosDetalhamentoTopicos> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizaTopicos dados) {
+        var topico = repository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
         topico.atualizarInformacoes(dados);
         return ResponseEntity.ok(new DadosDetalhamentoTopicos(topico));
 
@@ -52,18 +55,17 @@ public class TopicosController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DadosDetalhamentoTopicos> detalhar(@PathVariable Long id) {
-        var topico = repository.getReferenceById(id);
+        var topico = repository.findById(id).orElseThrow(EntityNotFoundException::new);
         return ResponseEntity.ok(new DadosDetalhamentoTopicos(topico));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluir(@PathVariable Long id){
-        var topico = repository.getReferenceById(id);
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        var topico = repository.findById(id).orElseThrow(EntityNotFoundException::new);
         topico.excluir();
         return ResponseEntity.noContent().build();
     }
-
 
 
 }

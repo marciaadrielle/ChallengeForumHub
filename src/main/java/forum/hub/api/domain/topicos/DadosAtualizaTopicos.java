@@ -1,12 +1,9 @@
 package forum.hub.api.domain.topicos;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 
 public record DadosAtualizaTopicos(
-        @NotNull
-        Long id,
+
         String titulo,
         String mensagem,
         Curso curso,
@@ -15,7 +12,6 @@ public record DadosAtualizaTopicos(
 ) {
     public DadosAtualizaTopicos(Topicos topicos){
         this(
-                topicos.getId(),
                 topicos.getTitulo(),
                 topicos.getMensagem(),
                 topicos.getCurso(),

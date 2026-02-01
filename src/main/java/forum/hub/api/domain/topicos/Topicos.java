@@ -32,7 +32,7 @@ public class Topicos {
 
     private  Boolean ativo;
 
-    public Topicos(DadosCadastrotopicos dados) {
+    public Topicos(DadosCadastroTopicos dados) {
         this.ativo = true;
         this.titulo = dados.titulo();
         this.mensagem = dados.mensagem();
