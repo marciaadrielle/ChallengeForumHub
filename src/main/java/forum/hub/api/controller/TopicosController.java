@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +37,7 @@ public class TopicosController {
     @GetMapping
     public ResponseEntity<Page<DadosListagemTopicos>> listar(
             @RequestParam(required = false) Curso curso,
-            @PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
+            @PageableDefault(size = 10, sort = {"dataCriacao"}, direction = Sort.Direction.ASC) Pageable paginacao) {
         Page<Topicos> page;
         if (curso != null) {
             page = repository.findByCurso(curso, paginacao);
@@ -51,6 +52,10 @@ public class TopicosController {
     public ResponseEntity<DadosDetalhamentoTopicos> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizaTopicos dados) {
         var topico = repository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
+
+        if(repository.existsByTituloAndMensagemAndIdNot(dados.titulo(), dados.mensagem(), id)){
+            throw new IllegalArgumentException("á existe um tópico igual cadastrado");
+        }
         topico.atualizarInformacoes(dados);
         return ResponseEntity.ok(new DadosDetalhamentoTopicos(topico));
 

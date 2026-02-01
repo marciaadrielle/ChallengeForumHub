@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TopicosRepository extends JpaRepository<Topicos, Long> {
     boolean existsByTituloAndMensagem(String titulo, String mensagem);
+
+    boolean existsByTituloAndMensagemAndIdNot(String titulo, String mensagem, Long id);
+
     Page<Topicos> findByCurso(Curso curso, Pageable pageable);
 
     Page<Topicos> findAllByAtivoTrue(Pageable paginacao);
