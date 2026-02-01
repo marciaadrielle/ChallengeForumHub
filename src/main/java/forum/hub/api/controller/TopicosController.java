@@ -23,6 +23,9 @@ public class TopicosController {
     @PostMapping
     @Transactional
     public ResponseEntity<DadosDetalhamentoTopicos> cadastrarTopico(@RequestBody @Valid DadosCadastroTopicos dados, UriComponentsBuilder uriBuilder) {
+        if (repository.existsByTituloAndMensagem(dados.titulo(), dados.mensagem())){
+            throw new IllegalArgumentException("Já existe um tópico igual cadastrado");
+        }
         var topico = new Topicos(dados);
         repository.save(topico);
         var uri = uriBuilder.path("/topicos/{id}")

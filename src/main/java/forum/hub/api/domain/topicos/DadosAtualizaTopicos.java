@@ -7,7 +7,6 @@ public record DadosAtualizaTopicos(
         String titulo,
         String mensagem,
         Curso curso,
-        LocalDateTime dataCriacao,
         Status status
 ) {
     public DadosAtualizaTopicos(Topicos topicos){
@@ -15,7 +14,6 @@ public record DadosAtualizaTopicos(
                 topicos.getTitulo(),
                 topicos.getMensagem(),
                 topicos.getCurso(),
-                topicos.getDataCriacao(),
                 topicos.getStatus()
 
         );
